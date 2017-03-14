@@ -1,0 +1,7 @@
+syntax: glob
+vendor/*
+.idea/
+phpunit*.phar
+composer.lock
+composer-test.lock
+composer.phar
