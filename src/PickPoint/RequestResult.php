@@ -53,7 +53,10 @@ class RequestResult
         if(!$message)
             $message = self::getErrorMessagesByCode($code);
 
-        $this->errors[$code] = $message;
+        if($code)
+            $this->errors[$code] = $message;
+        else
+            $this->errors[$code] = $message;
     }
 
     /**

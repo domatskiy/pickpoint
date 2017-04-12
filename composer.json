@@ -20,7 +20,7 @@
             "type":"package",
             "package":{
                 "name":"domatskiy/pickpoint",
-                "version":"0.1.0",
+                "version":"0.2.0",
                 "source":{
                     "type":"git",
                     "url":"https://github.com/domatskiy/pickpoint",
@@ -46,6 +46,7 @@
         "guzzlehttp/guzzle": "^6.2"
         },
     "require-dev": {
-        "phpunit/phpunit": "^5.4.0"
+        "phpunit/phpunit": "^5.4.0",
+        "piwik/ini": "^1.0"
         }
 }
