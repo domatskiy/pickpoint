@@ -8,7 +8,7 @@
 
 namespace Domatskiy\PickPoint\Sendings;
 
-use Domatskiy\PickPoint\Sending\Invoice;
+use Domatskiy\PickPoint\Invoice;
 
 class Sending implements \ArrayAccess
 {
@@ -16,8 +16,8 @@ class Sending implements \ArrayAccess
 
     /**
      * Sending constructor.
-     * @param $EDTN
-     * @param $IKN
+     * @param $EDTN / <Идентификатор запроса, используемый для ответа. Указывайте уникальное число (50 символов)>
+     * @param $IKN / ИКН – номер договора (10 символов)
      * @param Invoice $Invoice
      */
     function __construct($EDTN, $IKN, Invoice $Invoice)

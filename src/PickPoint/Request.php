@@ -125,7 +125,15 @@ abstract class Request
             $result->setError($res->getStatusCode(), 'Err: '.$res->getBody());
         }
 
-        $result->setData($result_data);
+        if(isset($result_data['ErrorCode']) && $result_data['ErrorCode'] !== 0)
+        {
+            $error = isset($result_data['Error']) ? $result_data['Error'] : null;
+            $result->setError($result_data['ErrorCode'], $error);
+        }
+        else
+        {
+            $result->setData($result_data);
+        }
 
         return $result;
     }

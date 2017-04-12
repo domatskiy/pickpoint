@@ -5,8 +5,8 @@ namespace Domatskiy\PickPoint;
 class Delivery extends Request
 {
     /**
-     * @param $FromCity
-     * @param $ToPT
+     * @param $FromCity /город отправитель груза, обязательное поле
+     * @param $ToPT / Номер пункта выдачи
      * @return RequestResult
      */
     public function getzone($FromCity, $ToPT)

@@ -1,6 +1,6 @@
 <?php
 
-namespace Domatskiy\PickPoint;
+namespace Domatskiy\PickPoint\Invoice;
 
 class ClientReturnAddress implements \ArrayAccess
 {

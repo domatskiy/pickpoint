@@ -32,8 +32,7 @@
     "minimum-stability": "stable",
     "autoload": {
         "psr-4": {
-            "Domatskiy\\": "src/" ,
-            "Domatskiy\\PickPoint\\": "src/PickPoint"
+            "Domatskiy\\": "src/"
             }
         },
     "autoload-dev": {

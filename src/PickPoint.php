@@ -59,12 +59,19 @@ class PickPoint extends Request
     }
 
     /**
-     * @return PickPoint\Delivery
+     * @return PickPoint\Directory
      */
     public function directory()
     {
-        return new PickPoint\Delivery($this->session_id, $this->is_test);
+        return new PickPoint\Directory($this->session_id, $this->is_test);
     }
 
+    /**
+     * @return PickPoint\Delivery
+     */
+    public function delivery()
+    {
+        return new PickPoint\Delivery($this->session_id, $this->is_test);
+    }
 
 }

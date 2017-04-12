@@ -37,10 +37,6 @@ class LoginTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($result instanceof RequestResult, true);
 
         $this->assertEquals($result->isSuccess(), true);
-        if($result->isSuccess())
-        {
-            print_r($result->getData());
-        }
     }
 
 }

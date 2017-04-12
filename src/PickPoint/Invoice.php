@@ -1,9 +1,9 @@
 <?php
 
-namespace Domatskiy\PickPoint\Sending;
+namespace Domatskiy\PickPoint;
 
-use Domatskiy\PickPoint\ClientReturnAddress;
-use Domatskiy\PickPoint\Request;
+use Domatskiy\PickPoint\Invoice\ClientReturnAddress;
+use Domatskiy\PickPoint\Invoice\UnclaimedReturnAddress;
 
 class Invoice implements \ArrayAccess
 {

@@ -4,7 +4,7 @@ namespace Domatskiy\Tests;
 use Domatskiy\PickPoint;
 use Domatskiy\PickPoint\RequestResult;
 
-class CityTest extends \PHPUnit_Framework_TestCase
+class DeliveryTest extends \PHPUnit_Framework_TestCase
 {
     private $config_is_test = null,
             $config_login = null,
@@ -43,17 +43,28 @@ class CityTest extends \PHPUnit_Framework_TestCase
             $rsCity = $CPicPoint->directory()->citylist();
             $this->assertEquals($rsCity instanceof RequestResult, true);
             $this->assertEquals($rsCity->isSuccess(), true);
-            print_r(current($rsCity->getData()));
-
-            $rsStates = $CPicPoint->directory()->getstates();
-            $this->assertEquals($rsStates instanceof RequestResult, true);
-            $this->assertEquals($rsStates->isSuccess(), true);
-            print_r(current($rsStates->getData()));
+            $city = current($rsCity->getData());
+            print_r($city);
 
             $rsPostomat = $CPicPoint->directory()->postamatlist();
             $this->assertEquals($rsPostomat instanceof RequestResult, true);
             $this->assertEquals($rsPostomat->isSuccess(), true);
-            print_r(current($rsPostomat->getData()));
+            $postomat = current($rsPostomat->getData());
+            print_r($postomat);
+
+            $rsZone = $CPicPoint->delivery()->getzone($city['Id'], $postomat['Id']);
+            $this->assertEquals($rsZone instanceof RequestResult, true);
+
+            if($rsZone->isSuccess())
+                print_r($rsZone->getData());
+            else
+                print_r($rsZone->getErrors());
+
+            $this->assertEquals($rsZone->isSuccess(), true);
+            $zone = current($rsZone->getData());
+
+
+
 
         }
     }
