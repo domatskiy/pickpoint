@@ -3,14 +3,14 @@
 namespace Domatskiy;
 
 use Domatskiy\PickPoint\Request;
-use Domatskiy\PickPoint\RequestResult;
+use Domatskiy\PickPoint\Type;
 
 class PickPoint extends Request
 {
     /**
      * @param string $login
      * @param string $passw
-     * @return RequestResult
+     * @return Type\Auth
      */
     public function login($login = '', $passw = '')
     {
@@ -20,34 +20,31 @@ class PickPoint extends Request
             $passw = 'apitest';
         }
 
-        $result = $this->__request(self::METHOD_POST, '/login', [
+        /**
+         * @var $Auth Type\Auth
+         */
+        $Auth = $this->__request(self::METHOD_POST, '/login', Type\Auth::class, [
             'login' => $login,
             'password' => $passw
             ]);
 
-        $data = $result->getData();
+        if($Auth->SessionId && !$this->is_test)
+            $this->session_id = $Auth->SessionId;
 
-        if(!isset($data['SessionId']) && !$this->is_test)
-            $result->setError(null, $data['ErrorMessage']);
-        else
-            $this->session_id = $data['SessionId'];
-
-        return $result;
+        return $Auth;
     }
 
     /**
-     * @return RequestResult
+     * @return Type\Result
      */
     public function logout()
     {
-        $result = $this->__request(self::METHOD_POST, '/logout');
+        /**
+         * @var $Result Type\Result
+         */
+        $Result = $this->__request(self::METHOD_POST, '/logout', Type\Result::class);
 
-        $data = $result->getData();
-
-        if(!isset($data['Success']) || !$data['Success'])
-            $result->setError(0, 'logout error');
-
-        return $result;
+        return $Result;
     }
 
     /**

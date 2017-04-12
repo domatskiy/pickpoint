@@ -5,6 +5,9 @@ namespace Domatskiy\PickPoint;
 
 use Domatskiy\PickPoint\Sending\Invoice;
 use Domatskiy\PickPoint\Sendings\Sending;
+use Domatskiy\PickPoint\Type\File;
+use Domatskiy\PickPoint\Type\InvoiceList;
+use Domatskiy\PickPoint\Type\Result;
 
 class Sendings extends Request
 {
@@ -12,11 +15,14 @@ class Sendings extends Request
     /**
      * @desc Регистрация отправлений (одноместных)
      * @param Sending $sendings[]
-     * @return RequestResult
+     * @return Sendings
      */
-    public function createsending(array $sendings)
+    public function createSending(array $sendings)
     {
-        $result = $this->__request(self::METHOD_POST, '/createsending', [
+        /**
+         * @var $result Sendings
+         */
+        $result = $this->__request(self::METHOD_POST, '/createsending', Sendings::class, [
             'Sendings' => $sendings
             ]);
 
@@ -26,13 +32,16 @@ class Sendings extends Request
     /**
      * @desc Регистрация отправлений (многоместных)
      * @param Sending $sendings[]
-     * @return RequestResult
+     * @return Sendings
      */
     public function createShipment(array $sendings)
     {
-        $result = $this->__request(self::METHOD_POST, '/CreateShipment', [
+        /**
+         * @var $result Sendings
+         */
+        $result = $this->__request(self::METHOD_POST, '/CreateShipment', Sendings::class, [
             'Sendings' => $sendings
-        ]);
+            ]);
 
         return $result;
     }
@@ -40,11 +49,14 @@ class Sendings extends Request
     /**
      * @desc Формирование этикеток pdf для принтера Zebra
      * @param array $invoiceNum
-     * @return RequestResult
+     * @return File
      */
     public function makeZLabel(array $invoiceNum)
     {
-        $result = $this->__request(self::METHOD_POST, '/makeZLabel', [
+        /**
+         * @var $result File
+         */
+        $result = $this->__request(self::METHOD_POST, '/makeZLabel', File::class, [
             'Invoices' => $invoiceNum
             ]);
 
@@ -56,15 +68,18 @@ class Sendings extends Request
      * @param $CityName
      * @param $RegionName
      * @param array $invoiceNum
-     * @return RequestResult
+     * @return File
      */
     public function makeReestr($CityName, $RegionName, array $invoiceNum)
     {
-        $result = $this->__request(self::METHOD_POST, '/makereestr', [
+        /**
+         * @var $result File
+         */
+        $result = $this->__request(self::METHOD_POST, '/makereestr', File::class, [
             'CityName' => $CityName,
             'RegionName' => $RegionName,
             'Invoices' => $invoiceNum
-        ]);
+            ]);
 
         return $result;
     }
@@ -74,11 +89,14 @@ class Sendings extends Request
      * @param $CityName
      * @param $RegionName
      * @param array $invoiceNum
-     * @return RequestResult
+     * @return File
      */
     public function makeReestrNumber($CityName, $RegionName, array $invoiceNum)
     {
-        $result = $this->__request(self::METHOD_POST, '/makereestr', [
+        /**
+         * @var $result File
+         */
+        $result = $this->__request(self::METHOD_POST, '/makereestr', File::class, [
             'CityName' => $CityName,
             'RegionName' => $RegionName,
             'Invoices' => $invoiceNum
@@ -92,15 +110,18 @@ class Sendings extends Request
      * @param $IKN
      * @param $InvoiceNumber
      * @param $SenderCode
-     * @return RequestResult
+     * @return Result
      */
     public function removeInvoiceFromReestr($IKN, $InvoiceNumber, $SenderCode)
     {
-        $result = $this->__request(self::METHOD_POST, '/removeinvoicefromreestr', [
+        /**
+         * @var $result Result
+         */
+        $result = $this->__request(self::METHOD_POST, '/removeinvoicefromreestr', Result::class, [
             'IKN' => $IKN,
             'InvoiceNumber' => $InvoiceNumber,
             'SenderCode' => $SenderCode
-        ]);
+            ]);
 
         return $result;
     }
@@ -113,11 +134,14 @@ class Sendings extends Request
      * @param string $RecipientName
      * @param string $Email
      * @param int $Sum
-     * @return RequestResult
+     * @return Result
      */
     public function updateInvoice($InvoiceNumber, $GCInvoiceNumber, $PostamatNumber = '', $Phone = '', $RecipientName = '', $Email = '', $Sum = 0)
     {
-        $result = $this->__request(self::METHOD_POST, '/updateInvoice', [
+        /**
+         * @var $result Result
+         */
+        $result = $this->__request(self::METHOD_POST, '/updateInvoice', Result::class, [
             'InvoiceNumber' => $InvoiceNumber,
             'GCInvoiceNumber' => $GCInvoiceNumber,
             'PostamatNumber' => $PostamatNumber,
@@ -130,9 +154,17 @@ class Sendings extends Request
         return $result;
     }
 
+    /**
+     * @param $InvoiceNumber
+     * @param $GCInvoiceNumber
+     * @return Result
+     */
     public function cancelInvoice($InvoiceNumber, $GCInvoiceNumber)
     {
-        $result = $this->__request(self::METHOD_POST, '/cancelInvoice', [
+        /**
+         * @var $result Result
+         */
+        $result = $this->__request(self::METHOD_POST, '/cancelInvoice', Result::class, [
             'InvoiceNumber' => $InvoiceNumber,
             'GCInvoiceNumber' => $GCInvoiceNumber,
             ]);
@@ -140,12 +172,20 @@ class Sendings extends Request
         return $result;
     }
 
+    /**
+     * @param $InvoiceNumber
+     * @param $SenderInvoiceNumber
+     * @return InvoiceList
+     */
     public function trackSending($InvoiceNumber, $SenderInvoiceNumber)
     {
-        $result = $this->__request(self::METHOD_POST, '/tracksending', [
+        /**
+         * @var $result InvoiceList
+         */
+        $result = $this->__request(self::METHOD_POST, '/tracksending', InvoiceList::class, [
             'InvoiceNumber' => $InvoiceNumber,
             'SenderInvoiceNumber' => $SenderInvoiceNumber,
-        ]);
+            ]);
 
         return $result;
     }
