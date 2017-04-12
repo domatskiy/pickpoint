@@ -3,6 +3,12 @@
 namespace Domatskiy\PickPoint;
 
 
+use Domatskiy\PickPoint\Exception\ErrorException;
+use Domatskiy\PickPoint\Exception\ForbiddenException;
+use Domatskiy\PickPoint\Exception\JsonException;
+use Domatskiy\PickPoint\Exception\NotFoundException;
+use Domatskiy\PickPoint\Type\Result;
+
 abstract class Request
 {
     const METHOD_GET = 'GET';
@@ -18,13 +24,14 @@ abstract class Request
 
     protected $is_test = false;
     protected $session_id = '';
+    protected $IKN_test = '9990003041';
 
     /**
      * Request constructor.
      * @param $session_id
      * @param $is_test
      */
-    function __construct($session_id, $is_test)
+    function __construct($session_id = null, $is_test = false)
     {
         $this->session_id = $session_id;
 
@@ -54,16 +61,11 @@ abstract class Request
      * @param $method
      * @param $url
      * @param array $data
-     * @return RequestResult
+     * @return Result
      */
-    protected function __request($method, $url, array $data = array())
+    protected function __request($method, $url, $object, array $data = array())
     {
-        $result = new RequestResult();
-        $result_data = [];
-
-
         $full_url = $this->api_url.$url;
-        $result->setUrl($full_url);
 
         #в запросе указывать Content type равным “application/json”,
         #​ таймаут ожидания выполнения запроса 60 секунд,
@@ -71,7 +73,7 @@ abstract class Request
         $options = [
             #'form_params' => $data,
             #'body' => $data,
-        ];
+            ];
 
         $client = new \GuzzleHttp\Client();
 
@@ -106,35 +108,47 @@ abstract class Request
 
         if((int)$res->getStatusCode() >= 200 && (int)$res->getStatusCode() <= 226)
         {
-            try{
-                $result_data = (array)json_decode($res->getBody(), true);
+            $content_type = $res->getHeader('Content-Type');
 
-                if(!is_array($result_data))
-                    $result_data = array();
+            if(is_array($content_type))
+                $content_type = current($content_type);
 
-            }
-            catch (\Exception $e)
+            if(strpos($content_type, 'application/json') !== false)
             {
-                echo 'Exception: '.$e->getMessage();
-                $result->setError($e->getCode(), $e->getMessage());
+                try{
+                    $data = (array)json_decode($res->getBody(), true);
+                }
+                catch (\Exception $e)
+                {
+                    throw new JsonException($e->getMessage(), $e->getCode());
+                }
+
+                if(isset($data['ErrorCode']) && $data['ErrorCode'] !== 0)
+                {
+                    $message = isset($data['ErrorMessage']) ? $data['ErrorMessage'] : '';
+                    throw new \ErrorException($message, $data['ErrorCode']);
+                }
+
+                return new $object($data);
+
+            }
+            else
+            {
+                if(strpos($res->getBody(), 'Error'))
+                    throw new ErrorException($res->getBody());
+
+                return new $object($data);
             }
 
         }
+        elseif ($res->getStatusCode() == 403)
+            throw new ForbiddenException($url);
+        elseif ($res->getStatusCode() == 404)
+            throw new NotFoundException($url);
         else
         {
-            $result->setError($res->getStatusCode(), 'Err: '.$res->getBody());
+            new \Exception('what is it?');
         }
 
-        if(isset($result_data['ErrorCode']) && $result_data['ErrorCode'] !== 0)
-        {
-            $error = isset($result_data['Error']) ? $result_data['Error'] : null;
-            $result->setError($result_data['ErrorCode'], $error);
-        }
-        else
-        {
-            $result->setData($result_data);
-        }
-
-        return $result;
     }
 }

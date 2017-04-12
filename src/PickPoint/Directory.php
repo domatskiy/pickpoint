@@ -2,36 +2,50 @@
 
 namespace Domatskiy\PickPoint;
 
+use Domatskiy\PickPoint\Type\CityList;
+use Domatskiy\PickPoint\Type\PostomatList;
+use Domatskiy\PickPoint\Type\StateList;
+
 class Directory extends Request
 {
     /**
      * @desc Получение справочника статусов отправления
-     * @return RequestResult
+     * @return StateList
      */
     public function getstates()
     {
-        $result = $this->__request(self::METHOD_GET, '/getstates');
+        /**
+         * @var $rs StateList
+         */
+        $rs = $this->__request(self::METHOD_GET, '/getstates', StateList::class);
 
-        return $result;
+        return $rs;
     }
 
     /**
-     * @return RequestResult
+     * @return CityList
      */
     public function citylist()
     {
-        $result = $this->__request(self::METHOD_GET, '/citylist');
+        /**
+         * @var $rs CityList
+         */
+        $rs = $this->__request(self::METHOD_GET, '/citylist', CityList::class);
 
-        return $result;
+        return $rs;
     }
 
+    /**
+     * @return PostomatList
+     */
     public function postamatlist()
     {
-        $result = $this->__request(self::METHOD_GET, '/postamatlist');
+        /**
+         * @var $rs PostomatList
+         */
+        $rs = $this->__request(self::METHOD_GET, '/postamatlist', PostomatList::class);
 
-        return $result;
+        return $rs;
     }
-
-
 
 }

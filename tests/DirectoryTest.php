@@ -2,8 +2,9 @@
 namespace Domatskiy\Tests;
 
 use Domatskiy\PickPoint;
+use Domatskiy\PickPoint\Type;
 
-class LoginTest extends \PHPUnit_Framework_TestCase
+class DirectoryTest extends \PHPUnit_Framework_TestCase
 {
     private $config_is_test = null,
             $config_login = null,
@@ -30,14 +31,26 @@ class LoginTest extends \PHPUnit_Framework_TestCase
 
     public function test()
     {
-
-        $CPicPoint = new PickPoint(null, $this->config_is_test);
+        $CPicPoint = new PickPoint($this->config_is_test);
         $CPicPoint->login($this->config_login, $this->config_passw);
 
-        $result = $CPicPoint->login();
-        $this->assertEquals($result instanceof PickPoint\Type\Type, true);
+        $rsLogin = $CPicPoint->login();
 
-        echo 'SessionId: '.$result->SessionId;
+        $this->assertEquals($rsLogin instanceof Type\Auth, true);
+
+        $rsCityList = $CPicPoint->directory()->citylist();
+        $this->assertEquals($rsCityList instanceof Type\CityList, true);
+        print_r(current($rsCityList->data));
+
+
+        $rsStates = $CPicPoint->directory()->getstates();
+        $this->assertEquals($rsStates instanceof Type\StateList, true);
+        print_r(current($rsStates->data));
+
+        $rsPostomat = $CPicPoint->directory()->postamatlist();
+        $this->assertEquals($rsPostomat instanceof Type\PostomatList, true);
+        print_r(current($rsPostomat->data));
+
 
     }
 

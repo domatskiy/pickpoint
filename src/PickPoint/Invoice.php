@@ -2,6 +2,7 @@
 
 namespace Domatskiy\PickPoint;
 
+use Domatskiy\PickPoint\Exception\ValidateException;
 use Domatskiy\PickPoint\Invoice\ClientReturnAddress;
 use Domatskiy\PickPoint\Invoice\UnclaimedReturnAddress;
 
@@ -58,37 +59,37 @@ class Invoice implements \ArrayAccess
     function __construct($SenderCode, $Description, $RecipientName, $PostamatNumber, $MobilePhone, $Email, $PostageType, $GettingType, $PayType, $Sum, $InsuareValue, ClientReturnAddress $ClientReturnAddress, UnclaimedReturnAddress $UnclaimedReturnAddress, array $Places)
     {
         if(strlen($SenderCode) > 50)
-            throw new \Exception('not correct $SenderCode, max length 50');
+            throw new ValidateException('not correct $SenderCode, max length 50');
 
         if(strlen($Description) > 200)
-            throw new \Exception('not correct $Description, max length 200');
+            throw new ValidateException('not correct $Description, max length 200');
 
         if(strlen($RecipientName) > 150)
-            throw new \Exception('not correct $Description, max length 150');
+            throw new ValidateException('not correct $Description, max length 150');
 
         if(strlen($PostamatNumber) > 8)
-            throw new \Exception('not correct $PostamatNumber, max length 8');
+            throw new ValidateException('not correct $PostamatNumber, max length 8');
 
         if(strlen($MobilePhone) > 100)
-            throw new \Exception('not correct $MobilePhone, max length 100');
+            throw new ValidateException('not correct $MobilePhone, max length 100');
 
         if(strlen($Email) > 256)
-            throw new \Exception('not correct $Email, max length 256');
-
+            throw new ValidateException('not correct $Email, max length 256');
 
         if(!array_key_exists($PostageType, self::getPostageTypes()))
-            throw new \Exception('not correct $PostageType');
+            throw new ValidateException('not correct $PostageType');
 
         if(!array_key_exists($GettingType, self::getGettingTypes()))
-            throw new \Exception('not correct $GettingType');
+            throw new ValidateException('not correct $GettingType');
 
         if($PayType != self::PAY_TYPE)
-            throw new \Exception('not correct $PayType');
+            throw new ValidateException('not correct $PayType');
 
         if($PostageType == self::POSTAGE_TYPE_STANDART && $Sum > 0)
-            throw new \Exception('not correct $Sum for this postage type');
+            throw new ValidateException('not correct $Sum for this postage type');
+
         if($PostageType == self::POSTAGE_TYPE_STANDART && $Sum == 0)
-            throw new \Exception('not correct $Sum for this postage type');
+            throw new ValidateException('not correct $Sum for this postage type');
 
         $this->data['SenderCode'] = $SenderCode;
         $this->data['Description'] = $Description;
