@@ -2,11 +2,41 @@
 
 namespace Domatskiy\PickPoint\Sending;
 
+use Domatskiy\PickPoint\ClientReturnAddress;
 use Domatskiy\PickPoint\Request;
 
 class Invoice implements \ArrayAccess
 {
+    const POSTAGE_TYPE_STANDART = 10001; #Стандарт. Оплаченный заказ. При этом поле «Sum=0»
+    #const POSTAGE_TYPE_PRIORITET = 10002;
+    const POSTAGE_TYPE_STANDART_NP = 10003; # Стандарт НП Отправление с наложенным платежом. Поле «Sum>0»
+    #const POSTAGE_TYPE_ = 10004;
+
+    const GETTING_TYPE_CURIER = 101;
+    const GETTING_TYPE_SC = 102;
+
+    const PAY_TYPE = 1;
+
+    #const GETTING_TYPE_PT = 103;
+    #const GETTING_TYPE_PT_USELF = 104;
+
     protected $data = [];
+
+    public function getPostageTypes()
+    {
+        return [
+            self::POSTAGE_TYPE_STANDART => 'Стандарт. Оплаченный заказ.',
+            self::POSTAGE_TYPE_STANDART_NP => 'Стандарт НП Отправление с наложенным платежом.',
+        ];
+    }
+
+    public function getGettingTypes()
+    {
+        return [
+            self::GETTING_TYPE_CURIER => 'Курьер',
+            self::GETTING_TYPE_SC => 'СЦ',
+        ];
+    }
 
     /*
     'SenderCode':	'<Номер заказа магазина (50 символов)>',
@@ -25,6 +55,57 @@ class Invoice implements \ArrayAccess
     'Places':
     */
 
+    function __construct($SenderCode, $Description, $RecipientName, $PostamatNumber, $MobilePhone, $Email, $PostageType, $GettingType, $PayType, $Sum, $InsuareValue, ClientReturnAddress $ClientReturnAddress, UnclaimedReturnAddress $UnclaimedReturnAddress, array $Places)
+    {
+        if(strlen($SenderCode) > 50)
+            throw new \Exception('not correct $SenderCode, max length 50');
+
+        if(strlen($Description) > 200)
+            throw new \Exception('not correct $Description, max length 200');
+
+        if(strlen($RecipientName) > 150)
+            throw new \Exception('not correct $Description, max length 150');
+
+        if(strlen($PostamatNumber) > 8)
+            throw new \Exception('not correct $PostamatNumber, max length 8');
+
+        if(strlen($MobilePhone) > 100)
+            throw new \Exception('not correct $MobilePhone, max length 100');
+
+        if(strlen($Email) > 256)
+            throw new \Exception('not correct $Email, max length 256');
+
+
+        if(!array_key_exists($PostageType, self::getPostageTypes()))
+            throw new \Exception('not correct $PostageType');
+
+        if(!array_key_exists($GettingType, self::getGettingTypes()))
+            throw new \Exception('not correct $GettingType');
+
+        if($PayType != self::PAY_TYPE)
+            throw new \Exception('not correct $PayType');
+
+        if($PostageType == self::POSTAGE_TYPE_STANDART && $Sum > 0)
+            throw new \Exception('not correct $Sum for this postage type');
+        if($PostageType == self::POSTAGE_TYPE_STANDART && $Sum == 0)
+            throw new \Exception('not correct $Sum for this postage type');
+
+        $this->data['SenderCode'] = $SenderCode;
+        $this->data['Description'] = $Description;
+        $this->data['RecipientName'] = $RecipientName;
+        $this->data['PostamatNumber'] = $PostamatNumber;
+        $this->data['MobilePhone'] = $MobilePhone;
+        $this->data['Email'] = $Email;
+
+        $this->data['PostageType'] = $PostageType;
+        $this->data['GettingType'] = $GettingType;
+        $this->data['PayType'] = $PayType;
+        $this->data['InsuareValue'] = 0;
+
+        $this->data['ClientReturnAddress'] = $ClientReturnAddress;
+        $this->data['UnclaimedReturnAddress'] = $UnclaimedReturnAddress;
+        $this->data['Places'] = $Places;
+    }
 
     public function offsetExists($offset)
     {

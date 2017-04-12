@@ -14,10 +14,6 @@ class Sending implements \ArrayAccess
 {
     protected $data = [];
 
-    private $EDTN,
-            $IKN,
-            $Invoice;
-
     /**
      * Sending constructor.
      * @param $EDTN
@@ -26,9 +22,9 @@ class Sending implements \ArrayAccess
      */
     function __construct($EDTN, $IKN, Invoice $Invoice)
     {
-        $this->EDTN = $EDTN;
-        $this->IKN = $IKN;
-        $this->Invoice = $Invoice;
+        $this->data['EDTN'] = $EDTN;
+        $this->data['IKN'] = $IKN;
+        $this->data['Invoice'] = $Invoice;
     }
 
 
